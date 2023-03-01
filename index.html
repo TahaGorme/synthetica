@@ -28,6 +28,8 @@
                <div class="row">
                   <div class="input-field col s12"><i class="material-icons prefix">filter_9</i><input type="number" id="number" class="validate"><label for="number">Enter Number of Images</label></div>
                </div>
+               <button id="download-button">Download Images as Zip</button>
+
                <div class="row">
                   <div class="col s12 center-align"><button id="generate" class="btn waves-effect waves-light" type="button" name="action">Generate Images<i class="material-icons right">send</i></button></div>
                </div>
@@ -61,5 +63,31 @@
       
        const c1 = number => Math.ceil(number/9)*9;
       for(let i=0;i<c1/9);i++){let url=`https://craiyon.ajaysinghusesgi.repl.co/api?prompt=${prompt}`;$.ajax({url:url,success:function(result){let images=result.images;for(let j=0;j<images.length;j++){let img=`<div class="col s12 m6 l4"><img class="materialboxed responsive-img" src="${images[j]}"></div>`;$("#image-row").append(img);}$("#loader").hide();},error:function(err){console.log(err);}});}});$('.materialboxed').materialbox();</script>
+  
+   
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+      <script>
+      var downloadBtn = document.getElementById('download-button');
+
+downloadBtn.addEventListener('click', function() {
+  var images = document.getElementsByTagName('img');
+  var zip = new JSZip();
+
+  for (var i = 0; i < images.length; i++) {
+    var imageUrl = images[i].src;
+    var imageName = imageUrl.substring(imageUrl.lastIndexOf('/')+1);
+    fetch(imageUrl).then(function(response) {
+      return response.blob();
+    }).then(function(blob) {
+      zip.file(imageName, blob, {binary:true});
+      if (i === images.length - 1) {
+        zip.generateAsync({type:"blob"}).then(function(content) {
+          saveAs(content, "images.zip");
+        });
+      }
+    });
+  }
+});
+      </script>
    </body>
 </html>
