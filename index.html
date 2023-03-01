@@ -7,7 +7,13 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
       <title>Generate Images</title>
-      <style> 
+     
+     To download all the images on the current page in a zip file using vanilla JavaScript, you can use the jszip library to create a zip file and then use the fetch API to download the images and add them to the zip file. Here's an example code:
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+
+     <style> 
       /* Loader */
 #loader { display: none;  height: 100%; width: 100%; 
     top: 0;
@@ -28,6 +34,8 @@
                <div class="row">
                   <div class="input-field col s12"><i class="material-icons prefix">filter_9</i><input type="number" id="number" class="validate"><label for="number">Enter Number of Images</label></div>
                </div>
+               <button id="download-button">Download Images as Zip</button>
+
                <div class="row">
                   <div class="col s12 center-align"><button id="generate" class="btn waves-effect waves-light" type="button" name="action">Generate Images<i class="material-icons right">send</i></button></div>
                </div>
@@ -52,7 +60,36 @@
       <div class="container">
          <div class="row" id="image-row"></div>
       </div>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script><script src="https://code.jquery.com/jquery-3.5.1.min.js"></script><script>$(document).ready(function(){$('.sidenav').sidenav();});$("#generate").click(function(){$("#loader").show();$("#image-row").empty();let prompt=$("#prompt").val();
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js">
+      
+      </script>
+      <script>
+      var downloadBtn = document.getElementById('download-button');
+
+downloadBtn.addEventListener('click', function() {
+  var images = document.getElementsByTagName('img');
+  var zip = new JSZip();
+
+  for (var i = 0; i < images.length; i++) {
+    var imageUrl = images[i].src;
+    var imageName = imageUrl.substring(imageUrl.lastIndexOf('/')+1);
+    fetch(imageUrl).then(function(response) {
+      return response.blob();
+    }).then(function(blob) {
+      zip.file(imageName, blob, {binary:true});
+      if (i === images.length - 1) {
+        zip.generateAsync({type:"blob"}).then(function(content) {
+          saveAs(content, "images.zip");
+        });
+      }
+    });
+  }
+});
+      </script>
+      
+      
+      
+      <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script><script>$(document).ready(function(){$('.sidenav').sidenav();});$("#generate").click(function(){$("#loader").show();$("#image-row").empty();let prompt=$("#prompt").val();
       
       
 
