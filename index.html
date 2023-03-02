@@ -65,28 +65,31 @@
       
    var downloadBtn = document.getElementById('download-button');
 downloadBtn.addEventListener('click', function() {
-  var images = document.getElementsByTagName('img');
-  var zip = new JSZip();
+   $$('img').forEach(async (img) => {
+  try {
+    const src = img.src;
 
-  var promises = [];
-  for (var i = 0; i < images.length; i++) {
-    (function(i) {
-      var imageUrl = images[i].src;
-      var imageName = imageUrl.substring(imageUrl.lastIndexOf('/')+1);
-      var promise = fetch(imageUrl).then(function(response) {
-        return response.blob();
-      }).then(function(blob) {
-        zip.file(imageName, blob, {binary:true});
-      });
-      promises.push(promise);
-    })(i);
-  }
+    // Fetch the image as a blob.
+    const fetchResponse = await fetch(src);
+    const blob = await fetchResponse.blob();
+    const mimeType = blob.type;
 
-  Promise.all(promises).then(function() {
-    zip.generateAsync({type:"blob"}).then(function(content) {
-      saveAs(content, "images.zip");
-    });
-  });
+    // Figure out a name for it from the src and the mime-type.
+    const start = src.lastIndexOf('/') + 1;
+    const end = src.indexOf('.', start);
+    let name = src.substring(start, end === -1 ? undefined : end);
+    name = name.replace(/[^a-zA-Z0-9]+/g, '-');
+    name += '.' + mimeType.substring(mimeType.lastIndexOf('/') + 1);
+
+    // Download the blob using a <a> element.
+    const a = document.createElement('a');
+    a.setAttribute('href', URL.createObjectURL(blob));
+    a.setAttribute('download', name);
+    a.click();
+  } catch (e) {}
+});
+   
+      
 });
 
       
