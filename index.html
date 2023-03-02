@@ -62,26 +62,34 @@
   
      <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
       <script>
-      var downloadBtn = document.getElementById('download-button');
+      
+   var downloadBtn = document.getElementById('download-button');
 downloadBtn.addEventListener('click', function() {
   var images = document.getElementsByTagName('img');
   var zip = new JSZip();
 
+  var promises = [];
   for (var i = 0; i < images.length; i++) {
-    var imageUrl = images[i].src;
-    var imageName = imageUrl.substring(imageUrl.lastIndexOf('/')+1);
-    fetch(imageUrl).then(function(response) {
-      return response.blob();
-    }).then(function(blob) {
-      zip.file(imageName, blob, {binary:true});
-      if (i === images.length - 1) {
-        zip.generateAsync({type:"blob"}).then(function(content) {
-          saveAs(content, "images.zip");
-        });
-      }
-    });
+    (function(i) {
+      var imageUrl = images[i].src;
+      var imageName = imageUrl.substring(imageUrl.lastIndexOf('/')+1);
+      var promise = fetch(imageUrl).then(function(response) {
+        return response.blob();
+      }).then(function(blob) {
+        zip.file(imageName, blob, {binary:true});
+      });
+      promises.push(promise);
+    })(i);
   }
+
+  Promise.all(promises).then(function() {
+    zip.generateAsync({type:"blob"}).then(function(content) {
+      saveAs(content, "images.zip");
+    });
+  });
 });
+
+      
       </script>
    </body>
 </html>
