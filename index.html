@@ -58,7 +58,7 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script><script src="https://code.jquery.com/jquery-3.5.1.min.js"></script><script>$(document).ready(function(){$('.sidenav').sidenav();});$("#generate").click(function(){$("#loader").show();$("#image-row").empty();let prompt=$("#prompt").val();let number=$("#number").val();
       
      // const c1 = number => Math.ceil(number/9)*9;
-      for(let i=0;i<number/9;i++){let url=`https://craiyon.ajaysinghusesgi.repl.co/api?prompt=${prompt}`;$.ajax({url:url,success:function(result){let images=result.images;for(let j=0;j<images.length;j++){let img=`<div class="col s12 m6 l4"><img class="materialboxed responsive-img" src="${images[j]}"></div>`;$("#image-row").append(img);}$("#loader").hide();},error:function(err){console.log(err);}});}});$('.materialboxed').materialbox();</script>
+      for(let i=0;i<number/9;i++){let url=`https://craiyon.ajaysinghusesgi.repl.co/api?prompt=${prompt}`;$.ajax({url:url,success:function(result){let images=result.images;for(let j=0;j<images.length;j++){let img=`<div class="col s12 m6 l4"><img class="materialboxed responsive-img" src="${images[j]}"></div>`;$("#image-row").append(img);}$("#loader").hide();},error:function(err){alert(err);}});}});$('.materialboxed').materialbox();</script>
   
      <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
       <script>
